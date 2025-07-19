@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>メール送信体験アプリ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      background-color: #f9f9f9;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 24px;
+    }
+
+    .user-block {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .x-block { background-color: #d0e6ff; }
+    .y-block { background-color: #fff5cc; }
+    .z-block { background-color: #ffe5e5; }
+
+    label {
+      display: inline-block;
+      width: 150px;
+    }
+
+    select {
+      padding: 4px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      display: block;
+      width: 100%;
+    }
+
+    .result-block {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .x-result { border: 2px solid #007BFF; background-color: #ffffff; }
+    .y-result { border: 2px solid #FFC107; background-color: #ffffff; }
+    .z-result { border: 2px solid #FF6B6B; background-color: #ffffff; }
+
+    .bold {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>メール送信体験アプリ</h1>
+
+  <div class="user-block x-block">
+    <span>受信者 X（x@example.com）</span>
+    <select id="xType">
+      <option value="to">To</option>
+      <option value="cc">Cc</option>
+      <option value="bcc">Bcc</option>
+    </select>
+  </div>
+
+  <div class="user-block y-block">
+    <span>受信者 Y（y@example.com）</span>
+    <select id="yType">
+      <option value="to">To</option>
+      <option value="cc">Cc</option>
+      <option value="bcc">Bcc</option>
+    </select>
+  </div>
+
+  <div class="user-block z-block">
+    <span>受信者 Z（z@example.com）</span>
+    <select id="zType">
+      <option value="to">To</option>
+      <option value="cc">Cc</option>
+      <option value="bcc">Bcc</option>
+    </select>
+  </div>
+
+  <button onclick="sendMail()">送信する</button>
+
+  <div id="results"></div>
+
+  <script>
+    function sendMail() {
+      const x = document.getElementById("xType").value;
+      const y = document.getElementById("yType").value;
+      const z = document.getElementById("zType").value;
+
+      const mailMap = { to: [], cc: [], bcc: [] };
+
+      if (x) mailMap[x].push("X（x@example.com）");
+      if (y) mailMap[y].push("Y（y@example.com）");
+      if (z) mailMap[z].push("Z（z@example.com）");
+
+      const recipients = { x, y, z };
+      const names = { x: "X", y: "Y", z: "Z" };
+      const emails = { x: "x@example.com", y: "y@example.com", z: "z@example.com" };
+
+      const results = [];
+
+      for (const key of ["x", "y", "z"]) {
+        const type = recipients[key];
+        let visibleList = [];
+
+        if (type === "to" || type === "cc") {
+          visibleList = [...mailMap["to"], ...mailMap["cc"]];
+        } else if (type === "bcc") {
+          visibleList = [...mailMap["to"], ...mailMap["cc"]];
+        }
+
+        let content = `<div class="result-block ${key}-result">`;
+        content += `<div class="bold">● ${names[key]}さんの受信画面:</div>`;
+        content += `差出人: sender@example.com<br>`;
+        content += `宛先(To): ${mailMap["to"].join(", ") || "なし"}<br>`;
+        content += `Cc: ${mailMap["cc"].join(", ") || "なし"}<br>`;
+
+        if (type === "bcc") {
+          content += `Bcc: ${emails[key]}<br>`;
+        }
+
+        content += `本文: メールを送信しました。</div>`;
+        results.push(content);
+      }
+
+      document.getElementById("results").innerHTML = results.join("<br>");
+    }
+  </script>
+
+</body>
+</html>
